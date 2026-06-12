@@ -1,12 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { SummaryCards } from './components/dashboard/SummaryCards';
 import { SpendingChart } from './components/dashboard/SpendingChart';
 import { InsightCard } from './components/dashboard/InsightCard';
-import type { Transaction } from './types/transaction';
+import { TransactionForm } from './components/transaction/TransactionForm';
+import { TransactionTable } from './components/transaction/TransactionTable';
+import { CategoryFilter } from './components/transaction/CategoryFilter';
+import { useTransactions } from './hooks/useTransactions';
 
 function App() {
-  // Temporary empty state
-  const [transactions] = React.useState<Transaction[]>([]);
+  const { transactions, addTransaction, deleteTransaction } = useTransactions();
+  
+  // Filter state
+  const [selectedType, setSelectedType] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+
+  // Apply filters
+  const filteredTransactions = transactions.filter(t => {
+    if (selectedType !== 'all' && t.type !== selectedType) return false;
+    if (selectedCategory !== 'All' && t.category !== selectedCategory) return false;
+    if (startDate && new Date(t.date) < new Date(startDate)) return false;
+    if (endDate && new Date(t.date) > new Date(endDate)) return false;
+    return true;
+  });
 
   return (
     <div className="min-h-screen bg-slate-50 p-4 md:p-8">
@@ -18,18 +35,30 @@ function App() {
 
         <main className="space-y-8">
           <InsightCard transactions={transactions} />
-          
           <SummaryCards transactions={transactions} />
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2">
-              {/* Transaction Form and Table will go here in Phase 1 (CRUD) */}
-              <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 p-6 h-full flex items-center justify-center text-slate-400">
-                Transaction Table Placeholder
-              </div>
-            </div>
-            <div className="lg:col-span-1">
+            {/* Left Column: Form & Chart */}
+            <div className="lg:col-span-1 space-y-8">
+              <TransactionForm onSubmit={addTransaction} />
               <SpendingChart transactions={transactions} />
+            </div>
+            
+            {/* Right Column: Filters & Table */}
+            <div className="lg:col-span-2 flex flex-col h-full">
+              <CategoryFilter
+                selectedType={selectedType}
+                onTypeChange={setSelectedType}
+                selectedCategory={selectedCategory}
+                onCategoryChange={setSelectedCategory}
+                startDate={startDate}
+                onStartDateChange={setStartDate}
+                endDate={endDate}
+                onEndDateChange={setEndDate}
+              />
+              <div className="flex-1">
+                <TransactionTable transactions={filteredTransactions} onDelete={deleteTransaction} />
+              </div>
             </div>
           </div>
         </main>
