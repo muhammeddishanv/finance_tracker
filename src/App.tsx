@@ -1,5 +1,6 @@
 import React from 'react';
 import { SummaryCards } from './components/dashboard/SummaryCards';
+import { SpendingChart } from './components/dashboard/SpendingChart';
 import type { Transaction } from './types/transaction';
 
 function App() {
@@ -16,7 +17,18 @@ function App() {
 
         <main className="space-y-8">
           <SummaryCards transactions={transactions} />
-          {/* Other components like charts and tables will go here */}
+          
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              {/* Transaction Form and Table will go here in Phase 1 (CRUD) */}
+              <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 p-6 h-full flex items-center justify-center text-slate-400">
+                Transaction Table Placeholder
+              </div>
+            </div>
+            <div className="lg:col-span-1">
+              <SpendingChart transactions={transactions} />
+            </div>
+          </div>
         </main>
       </div>
     </div>
