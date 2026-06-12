@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { SummaryCards } from './components/dashboard/SummaryCards';
 import { SpendingChart } from './components/dashboard/SpendingChart';
 import { InsightCard } from './components/dashboard/InsightCard';
@@ -6,50 +6,42 @@ import { TransactionForm } from './components/transaction/TransactionForm';
 import { TransactionTable } from './components/transaction/TransactionTable';
 import { CategoryFilter } from './components/transaction/CategoryFilter';
 import { ConfirmModal } from './components/ui/ConfirmModal';
-import { Toast, type ToastType } from './components/ui/Toast';
+import { Toast } from './components/ui/Toast';
 import { useTransactions } from './hooks/useTransactions';
-import type { Transaction } from './types/transaction';
+import { useTransactionFilters } from './hooks/useTransactionFilters';
+import { useToast } from './hooks/useToast';
+import type { Transaction, TransactionFilters, TransactionInput } from './types/transaction';
 
 function App() {
   const { transactions, addTransaction, updateTransaction, deleteTransaction } = useTransactions();
   
-  // Filter state
-  const [selectedType, setSelectedType] = useState('all');
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  // Consolidated Filter state
+  const [filters, setFilters] = useState<TransactionFilters>({
+    type: 'all',
+    category: 'All',
+    startDate: '',
+    endDate: ''
+  });
 
   // Edit state
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
 
   // UI state
   const [transactionToDelete, setTransactionToDelete] = useState<string | null>(null);
-  const [toast, setToast] = useState<{ isVisible: boolean; message: string; type: ToastType }>({ 
-    isVisible: false, 
-    message: '', 
-    type: 'success' 
-  });
+  
+  // Custom Toast Hook
+  const { toast, showToast, hideToast } = useToast();
 
-  const showToast = (message: string, type: ToastType = 'success') => {
-    setToast({ isVisible: true, message, type });
-  };
+  // Custom Filtering Hook
+  const filteredTransactions = useTransactionFilters(transactions, filters);
 
-  // Apply filters
-  const filteredTransactions = transactions.filter(t => {
-    if (selectedType !== 'all' && t.type !== selectedType) return false;
-    if (selectedCategory !== 'All' && t.category !== selectedCategory) return false;
-    if (startDate && new Date(t.date) < new Date(startDate)) return false;
-    if (endDate && new Date(t.date) > new Date(endDate)) return false;
-    return true;
-  });
-
-  const handleFormSubmit = (data: any) => {
+  const handleFormSubmit = (data: TransactionInput | Transaction) => {
     if (editingTransaction) {
-      updateTransaction(data);
+      updateTransaction(data as Transaction);
       setEditingTransaction(null);
       showToast('Transaction updated successfully');
     } else {
-      addTransaction(data);
+      addTransaction(data as TransactionInput);
       showToast('Transaction added successfully');
     }
   };
@@ -67,39 +59,57 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 p-4 md:p-8 font-sans selection:bg-blue-100 selection:text-blue-900">
-      <div className="max-w-7xl mx-auto space-y-8">
-        <header>
-          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Finance Tracker</h1>
-          <p className="text-slate-500 mt-1">Manage your income and expenses easily.</p>
-        </header>
+    <div className="min-h-screen pb-8 selection:bg-[var(--color-neo-lime)] selection:text-black">
+      {/* Header Marquee */}
+      <div className="w-full bg-[var(--color-neo-lime)] border-b-[3px] border-[#111111] flex items-center justify-between h-12 shadow-[0_4px_0_rgba(0,0,0,0.1)]">
+        <div className="flex-1 overflow-hidden whitespace-nowrap flex items-center h-full">
+           <div className="animate-marquee flex w-max pt-1 font-bold uppercase tracking-widest text-sm">
+             <div className="flex-shrink-0 px-2">
+               TRACK SMART ★ SPEND WISELY ★ BUILD WEALTH ★ LIVE FREELY ★ TRACK SMART ★ SPEND WISELY ★ BUILD WEALTH ★ LIVE FREELY ★ TRACK SMART ★ SPEND WISELY ★ BUILD WEALTH ★ LIVE FREELY ★ TRACK SMART ★ SPEND WISELY ★ BUILD WEALTH ★ LIVE FREELY ★ TRACK SMART ★ SPEND WISELY ★ BUILD WEALTH ★ LIVE FREELY ★ 
+             </div>
+             <div className="flex-shrink-0 px-2">
+               TRACK SMART ★ SPEND WISELY ★ BUILD WEALTH ★ LIVE FREELY ★ TRACK SMART ★ SPEND WISELY ★ BUILD WEALTH ★ LIVE FREELY ★ TRACK SMART ★ SPEND WISELY ★ BUILD WEALTH ★ LIVE FREELY ★ TRACK SMART ★ SPEND WISELY ★ BUILD WEALTH ★ LIVE FREELY ★ TRACK SMART ★ SPEND WISELY ★ BUILD WEALTH ★ LIVE FREELY ★ 
+             </div>
+           </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto p-4 md:p-8 space-y-8">
+        
+        {/* Top Row: Branding & Insight */}
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 lg:h-[136px]">
+          <header className="bg-[var(--color-neo-lime)] border-neo shadow-neo p-6 shrink-0 w-full lg:w-[360px] xl:w-[380px] flex flex-col justify-between h-full">
+            <h1 className="text-3xl font-extrabold uppercase leading-[0.9] tracking-tight">
+              Finance Tracker
+            </h1>
+            <p className="font-bold text-xs uppercase mt-auto leading-tight">
+              Manage your income & expenses easily.
+            </p>
+          </header>
+          
+          <div className="flex-1 h-full">
+            <InsightCard transactions={transactions} />
+          </div>
+        </div>
 
         <main className="space-y-8">
-          <InsightCard transactions={transactions} />
           <SummaryCards transactions={transactions} />
           
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left Column: Form & Chart */}
-            <div className="lg:col-span-1 space-y-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 -ml-4 lg:-ml-16 xl:-ml-28 -mr-4 lg:-mr-16 xl:-mr-28">
+            {/* Left Column: Form (3 cols) */}
+            <div className="lg:col-span-3 space-y-6">
               <TransactionForm 
                 onSubmit={handleFormSubmit} 
                 initialData={editingTransaction} 
                 onCancelEdit={() => setEditingTransaction(null)} 
               />
-              <SpendingChart transactions={transactions} />
             </div>
             
-            {/* Right Column: Filters & Table */}
-            <div className="lg:col-span-2 flex flex-col h-full">
+            {/* Center Column: Filters & Table (6 cols) */}
+            <div className="lg:col-span-6 xl:col-span-7 flex flex-col h-full space-y-6">
               <CategoryFilter
-                selectedType={selectedType}
-                onTypeChange={setSelectedType}
-                selectedCategory={selectedCategory}
-                onCategoryChange={setSelectedCategory}
-                startDate={startDate}
-                onStartDateChange={setStartDate}
-                endDate={endDate}
-                onEndDateChange={setEndDate}
+                filters={filters}
+                onFilterChange={setFilters}
               />
               <div className="flex-1">
                 <TransactionTable 
@@ -109,13 +119,18 @@ function App() {
                 />
               </div>
             </div>
+
+            {/* Right Column: Chart (3 cols) */}
+            <div className="lg:col-span-3 xl:col-span-2 space-y-6">
+              <SpendingChart transactions={transactions} />
+            </div>
           </div>
         </main>
       </div>
 
       <ConfirmModal 
         isOpen={!!transactionToDelete}
-        title="Delete Transaction"
+        title="DELETE TRANSACTION?"
         message="Are you sure you want to delete this transaction? This action cannot be undone."
         onConfirm={handleDelete}
         onCancel={() => setTransactionToDelete(null)}
@@ -125,7 +140,7 @@ function App() {
         isVisible={toast.isVisible}
         message={toast.message}
         type={toast.type}
-        onClose={() => setToast(prev => ({ ...prev, isVisible: false }))}
+        onClose={hideToast}
       />
     </div>
   );

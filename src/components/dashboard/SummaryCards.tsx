@@ -1,74 +1,61 @@
 import { useMemo } from 'react';
+import { ArrowUpRight, ArrowDownRight, Wallet, TrendingUp } from 'lucide-react';
+import type { Transaction } from '../../types/transaction';
 import { calculateSummary } from '../../utils/calculateSummary';
 import { formatCurrency } from '../../utils/formatCurrency';
-import type { Transaction } from '../../types/transaction';
 import { Card } from '../ui/Card';
-import { ArrowUpCircle, ArrowDownCircle, Wallet, TrendingUp } from 'lucide-react';
 
-interface SummaryCardsProps {
-  transactions: Transaction[];
-}
-
-export function SummaryCards({ transactions }: SummaryCardsProps) {
+export function SummaryCards({ transactions }: { transactions: Transaction[] }) {
   const summary = useMemo(() => calculateSummary(transactions), [transactions]);
+
+  const cards = [
+    {
+      title: 'Total Income',
+      value: formatCurrency(summary.totalIncome),
+      icon: ArrowUpRight,
+      color: 'bg-[var(--color-neo-income)]',
+    },
+    {
+      title: 'Total Expense',
+      value: formatCurrency(summary.totalExpense),
+      icon: ArrowDownRight,
+      color: 'bg-[var(--color-neo-expense)]',
+    },
+    {
+      title: 'Net Balance',
+      value: formatCurrency(summary.netBalance),
+      icon: Wallet,
+      color: 'bg-[var(--color-neo-warning)]',
+      isNegative: summary.netBalance < 0
+    },
+    {
+      title: 'Top Spending',
+      value: summary.topCategory,
+      icon: TrendingUp,
+      color: 'bg-[var(--color-neo-purple)]',
+      isText: true,
+    },
+  ];
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <Card>
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-slate-500">Total Income</p>
-            <h3 className="text-2xl font-bold text-slate-800 mt-1">
-              {formatCurrency(summary.totalIncome)}
-            </h3>
+      {cards.map((card) => (
+        <Card key={card.title} className="flex items-center justify-between hover-neo">
+          <div className="flex flex-col gap-4 w-full">
+            <div className="flex justify-between items-start w-full">
+              <div className={`inline-block px-3 py-1 border-neo text-xs font-bold uppercase ${card.color}`}>
+                {card.title}
+              </div>
+              <div className={`p-2 border-neo rounded-full ${card.color} shadow-neo-sm`}>
+                <card.icon className="w-5 h-5 text-[var(--color-neo-black)]" strokeWidth={3} />
+              </div>
+            </div>
+            <p className={`text-3xl font-extrabold tracking-tight truncate ${card.isNegative ? 'text-rose-600' : 'text-[var(--color-neo-black)]'} ${card.isText ? 'text-2xl uppercase' : ''}`}>
+              {card.isNegative ? '-' : ''}{card.value.replace('-', '')}
+            </p>
           </div>
-          <div className="h-12 w-12 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600">
-            <ArrowUpCircle className="w-6 h-6" />
-          </div>
-        </div>
-      </Card>
-
-      <Card>
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-slate-500">Total Expense</p>
-            <h3 className="text-2xl font-bold text-slate-800 mt-1">
-              {formatCurrency(summary.totalExpense)}
-            </h3>
-          </div>
-          <div className="h-12 w-12 bg-rose-100 rounded-full flex items-center justify-center text-rose-600">
-            <ArrowDownCircle className="w-6 h-6" />
-          </div>
-        </div>
-      </Card>
-
-      <Card>
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-slate-500">Net Balance</p>
-            <h3 className={`text-2xl font-bold mt-1 ${summary.netBalance >= 0 ? 'text-slate-800' : 'text-rose-600'}`}>
-              {formatCurrency(summary.netBalance)}
-            </h3>
-          </div>
-          <div className={`h-12 w-12 rounded-full flex items-center justify-center ${summary.netBalance >= 0 ? 'bg-blue-100 text-blue-600' : 'bg-rose-100 text-rose-600'}`}>
-            <Wallet className="w-6 h-6" />
-          </div>
-        </div>
-      </Card>
-
-      <Card>
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-slate-500">Top Spending</p>
-            <h3 className="text-xl font-bold text-slate-800 mt-1 truncate max-w-[140px]" title={summary.topCategory}>
-              {summary.topCategory}
-            </h3>
-          </div>
-          <div className="h-12 w-12 bg-amber-100 rounded-full flex items-center justify-center text-amber-600">
-            <TrendingUp className="w-6 h-6" />
-          </div>
-        </div>
-      </Card>
+        </Card>
+      ))}
     </div>
   );
 }

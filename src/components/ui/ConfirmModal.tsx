@@ -1,4 +1,3 @@
-import React from 'react';
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -22,21 +21,23 @@ export function ConfirmModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[var(--color-neo-bg)]/80 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-white border-neo shadow-neo w-full max-w-sm animate-in zoom-in-95 duration-200 rounded-none">
         <div className="p-6">
-          <h3 className="text-xl font-bold text-slate-800 mb-2">{title}</h3>
-          <p className="text-slate-500 mb-8 leading-relaxed">{message}</p>
-          <div className="flex gap-3 justify-end">
+          <div className="inline-block px-3 py-1 border-neo bg-[var(--color-neo-expense)] text-xs font-bold uppercase mb-6">
+            {title}
+          </div>
+          <p className="text-[var(--color-neo-black)] font-bold mb-8 leading-relaxed uppercase text-sm">{message}</p>
+          <div className="flex gap-4 justify-end">
             <button
               onClick={onCancel}
-              className="px-4 py-2 font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+              className="flex-1 px-4 py-3 font-bold uppercase text-[var(--color-neo-black)] bg-white border-neo hover:bg-slate-50 transition-colors shadow-neo-sm hover:translate-y-[-2px] hover:shadow-neo active:translate-y-0 active:shadow-none"
             >
               {cancelText}
             </button>
             <button
               onClick={onConfirm}
-              className="px-4 py-2 font-medium text-white bg-rose-500 hover:bg-rose-600 rounded-lg transition-colors shadow-md shadow-rose-500/20"
+              className="flex-1 px-4 py-3 font-bold uppercase text-white bg-[var(--color-neo-black)] border-neo hover:bg-slate-800 transition-colors shadow-neo-sm hover:translate-y-[-2px] hover:shadow-neo active:translate-y-0 active:shadow-none"
             >
               {confirmText}
             </button>

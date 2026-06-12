@@ -1,47 +1,40 @@
-import React from 'react';
 import { INCOME_CATEGORIES, EXPENSE_CATEGORIES } from '../../constants/categories';
 
+import type { TransactionFilters } from '../../types/transaction';
+
 interface CategoryFilterProps {
-  selectedCategory: string;
-  onCategoryChange: (category: string) => void;
-  selectedType: string; // 'all' | 'income' | 'expense'
-  onTypeChange: (type: string) => void;
-  startDate?: string;
-  onStartDateChange?: (date: string) => void;
-  endDate?: string;
-  onEndDateChange?: (date: string) => void;
+  filters: TransactionFilters;
+  onFilterChange: (filters: TransactionFilters) => void;
 }
 
 export function CategoryFilter({
-  selectedCategory,
-  onCategoryChange,
-  selectedType,
-  onTypeChange,
-  startDate = '',
-  onStartDateChange,
-  endDate = '',
-  onEndDateChange
+  filters,
+  onFilterChange
 }: CategoryFilterProps) {
-  // Dynamically determine which categories to show based on the selected type
+  const { type: selectedType, category: selectedCategory, startDate = '', endDate = '' } = filters;
+
   const categories =
     selectedType === 'income' ? INCOME_CATEGORIES :
     selectedType === 'expense' ? EXPENSE_CATEGORIES :
     [...INCOME_CATEGORIES, ...EXPENSE_CATEGORIES];
 
   return (
-    <div className="bg-white p-4 md:p-5 rounded-2xl border border-slate-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] mb-6 flex flex-col lg:flex-row gap-4">
+    <div className="bg-[var(--color-neo-warning)] p-4 border-neo shadow-neo mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {/* Type Filter */}
-      <div className="flex-1">
-        <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+      <div>
+        <label className="block text-xs font-bold uppercase mb-1">
           Transaction Type
         </label>
         <select
           value={selectedType}
           onChange={(e) => {
-            onTypeChange(e.target.value);
-            onCategoryChange('All'); // Reset category when type changes
+            onFilterChange({
+              ...filters,
+              type: e.target.value,
+              category: 'All' // Reset category when type changes
+            });
           }}
-          className="w-full rounded-xl border-slate-200 border bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-700 focus:bg-white focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all cursor-pointer"
+          className="w-full h-10 border-neo bg-white px-3 font-bold uppercase text-xs focus:outline-none focus:shadow-neo-sm transition-shadow cursor-pointer rounded-none"
         >
           <option value="all">All Types</option>
           <option value="income">Income</option>
@@ -50,14 +43,19 @@ export function CategoryFilter({
       </div>
       
       {/* Category Filter */}
-      <div className="flex-1">
-        <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+      <div>
+        <label className="block text-xs font-bold uppercase mb-1">
           Category
         </label>
         <select
           value={selectedCategory}
-          onChange={(e) => onCategoryChange(e.target.value)}
-          className="w-full rounded-xl border-slate-200 border bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-700 focus:bg-white focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all cursor-pointer"
+          onChange={(e) => {
+            onFilterChange({
+              ...filters,
+              category: e.target.value
+            });
+          }}
+          className="w-full h-10 border-neo bg-white px-3 font-bold uppercase text-xs focus:outline-none focus:shadow-neo-sm transition-shadow cursor-pointer rounded-none"
         >
           <option value="All">All Categories</option>
           {categories.map((category) => (
@@ -68,33 +66,39 @@ export function CategoryFilter({
         </select>
       </div>
 
-      {/* Date Range Filters (Optional logic) */}
-      {onStartDateChange && onEndDateChange && (
-        <div className="flex-1 flex gap-3">
-          <div className="flex-1">
-            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
-              From Date
-            </label>
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => onStartDateChange(e.target.value)}
-              className="w-full rounded-xl border-slate-200 border bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-700 focus:bg-white focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all cursor-pointer"
-            />
-          </div>
-          <div className="flex-1">
-            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
-              To Date
-            </label>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => onEndDateChange(e.target.value)}
-              className="w-full rounded-xl border-slate-200 border bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-700 focus:bg-white focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all cursor-pointer"
-            />
-          </div>
-        </div>
-      )}
+      {/* Date Range Filters */}
+      <div>
+        <label className="block text-xs font-bold uppercase mb-1">
+          From Date
+        </label>
+        <input
+          type="date"
+          value={startDate}
+          onChange={(e) => {
+            onFilterChange({
+              ...filters,
+              startDate: e.target.value
+            });
+          }}
+          className="w-full h-10 border-neo bg-white px-3 font-bold uppercase text-xs focus:outline-none focus:shadow-neo-sm transition-shadow rounded-none"
+        />
+      </div>
+      <div>
+        <label className="block text-xs font-bold uppercase mb-1">
+          To Date
+        </label>
+        <input
+          type="date"
+          value={endDate}
+          onChange={(e) => {
+            onFilterChange({
+              ...filters,
+              endDate: e.target.value
+            });
+          }}
+          className="w-full h-10 border-neo bg-white px-3 font-bold uppercase text-xs focus:outline-none focus:shadow-neo-sm transition-shadow rounded-none"
+        />
+      </div>
     </div>
   );
 }
