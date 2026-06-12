@@ -5,6 +5,8 @@ import { InsightCard } from './components/dashboard/InsightCard';
 import { TransactionForm } from './components/transaction/TransactionForm';
 import { TransactionTable } from './components/transaction/TransactionTable';
 import { CategoryFilter } from './components/transaction/CategoryFilter';
+import { ConfirmModal } from './components/ui/ConfirmModal';
+import { Toast, type ToastType } from './components/ui/Toast';
 import { useTransactions } from './hooks/useTransactions';
 import type { Transaction } from './types/transaction';
 
@@ -20,6 +22,18 @@ function App() {
   // Edit state
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
 
+  // UI state
+  const [transactionToDelete, setTransactionToDelete] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ isVisible: boolean; message: string; type: ToastType }>({ 
+    isVisible: false, 
+    message: '', 
+    type: 'success' 
+  });
+
+  const showToast = (message: string, type: ToastType = 'success') => {
+    setToast({ isVisible: true, message, type });
+  };
+
   // Apply filters
   const filteredTransactions = transactions.filter(t => {
     if (selectedType !== 'all' && t.type !== selectedType) return false;
@@ -33,16 +47,30 @@ function App() {
     if (editingTransaction) {
       updateTransaction(data);
       setEditingTransaction(null);
+      showToast('Transaction updated successfully');
     } else {
       addTransaction(data);
+      showToast('Transaction added successfully');
+    }
+  };
+
+  const confirmDelete = (id: string) => {
+    setTransactionToDelete(id);
+  };
+
+  const handleDelete = () => {
+    if (transactionToDelete) {
+      deleteTransaction(transactionToDelete);
+      setTransactionToDelete(null);
+      showToast('Transaction deleted successfully');
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 p-4 md:p-8">
+    <div className="min-h-screen bg-slate-50 p-4 md:p-8 font-sans selection:bg-blue-100 selection:text-blue-900">
       <div className="max-w-7xl mx-auto space-y-8">
         <header>
-          <h1 className="text-3xl font-bold text-slate-900">Finance Tracker</h1>
+          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Finance Tracker</h1>
           <p className="text-slate-500 mt-1">Manage your income and expenses easily.</p>
         </header>
 
@@ -76,7 +104,7 @@ function App() {
               <div className="flex-1">
                 <TransactionTable 
                   transactions={filteredTransactions} 
-                  onDelete={deleteTransaction} 
+                  onDelete={confirmDelete} 
                   onEdit={setEditingTransaction}
                 />
               </div>
@@ -84,6 +112,21 @@ function App() {
           </div>
         </main>
       </div>
+
+      <ConfirmModal 
+        isOpen={!!transactionToDelete}
+        title="Delete Transaction"
+        message="Are you sure you want to delete this transaction? This action cannot be undone."
+        onConfirm={handleDelete}
+        onCancel={() => setTransactionToDelete(null)}
+      />
+
+      <Toast 
+        isVisible={toast.isVisible}
+        message={toast.message}
+        type={toast.type}
+        onClose={() => setToast(prev => ({ ...prev, isVisible: false }))}
+      />
     </div>
   );
 }
