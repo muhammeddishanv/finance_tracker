@@ -1,6 +1,7 @@
 import React from 'react';
 import { SummaryCards } from './components/dashboard/SummaryCards';
 import { SpendingChart } from './components/dashboard/SpendingChart';
+import { InsightCard } from './components/dashboard/InsightCard';
 import type { Transaction } from './types/transaction';
 
 function App() {
@@ -16,6 +17,8 @@ function App() {
         </header>
 
         <main className="space-y-8">
+          <InsightCard transactions={transactions} />
+          
           <SummaryCards transactions={transactions} />
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
