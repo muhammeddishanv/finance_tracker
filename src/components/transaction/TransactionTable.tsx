@@ -1,14 +1,15 @@
 import type { Transaction } from '../../types/transaction';
 import { formatCurrency } from '../../utils/formatCurrency';
 import { Card } from '../ui/Card';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Edit2 } from 'lucide-react';
 
 interface TransactionTableProps {
   transactions: Transaction[];
   onDelete: (id: string) => void;
+  onEdit: (transaction: Transaction) => void;
 }
 
-export function TransactionTable({ transactions, onDelete }: TransactionTableProps) {
+export function TransactionTable({ transactions, onDelete, onEdit }: TransactionTableProps) {
   if (transactions.length === 0) {
     return (
       <Card className="flex flex-col items-center justify-center py-16 h-full">
@@ -53,9 +54,14 @@ export function TransactionTable({ transactions, onDelete }: TransactionTablePro
                   {t.type === 'income' ? '+' : '-'}{formatCurrency(t.amount)}
                 </td>
                 <td className="px-6 py-4 text-center">
-                  <button onClick={() => onDelete(t.id)} className="text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-all p-2 rounded-lg opacity-0 group-hover:opacity-100" title="Delete">
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                  <div className="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onClick={() => onEdit(t)} className="text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all p-2 rounded-lg" title="Edit">
+                      <Edit2 className="w-4 h-4" />
+                    </button>
+                    <button onClick={() => onDelete(t.id)} className="text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-all p-2 rounded-lg" title="Delete">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}

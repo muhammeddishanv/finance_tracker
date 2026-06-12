@@ -1,18 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { INCOME_CATEGORIES, EXPENSE_CATEGORIES } from '../../constants/categories';
 import type { Transaction, TransactionType } from '../../types/transaction';
 import { Card } from '../ui/Card';
 
 interface TransactionFormProps {
-  onSubmit: (transaction: Omit<Transaction, 'id'>) => void;
+  onSubmit: (transaction: any) => void; // Using any for simplicity as it can be Omit<Transaction, 'id'> or Transaction
+  initialData?: Transaction | null;
+  onCancelEdit?: () => void;
 }
 
-export function TransactionForm({ onSubmit }: TransactionFormProps) {
+export function TransactionForm({ onSubmit, initialData, onCancelEdit }: TransactionFormProps) {
   const [type, setType] = useState<TransactionType>('expense');
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState<string>(EXPENSE_CATEGORIES[0]);
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [note, setNote] = useState('');
+
+  // Populate form if initialData is provided (Edit Mode)
+  useEffect(() => {
+    if (initialData) {
+      setType(initialData.type);
+      setAmount(initialData.amount.toString());
+      setCategory(initialData.category);
+      setDate(new Date(initialData.date).toISOString().split('T')[0]);
+      setNote(initialData.note || '');
+    } else {
+      // Reset form (Add Mode)
+      setType('expense');
+      setAmount('');
+      setCategory(EXPENSE_CATEGORIES[0]);
+      setDate(new Date().toISOString().split('T')[0]);
+      setNote('');
+    }
+  }, [initialData]);
 
   const categories = type === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
 
@@ -20,22 +40,42 @@ export function TransactionForm({ onSubmit }: TransactionFormProps) {
     e.preventDefault();
     if (!amount || parseFloat(amount) <= 0) return;
 
-    onSubmit({
+    const transactionData = {
       type,
       amount: parseFloat(amount),
       category,
       date,
       note,
-    });
+    };
 
-    // Reset form
-    setAmount('');
-    setNote('');
+    if (initialData) {
+      // Pass full transaction with ID back for update
+      onSubmit({ ...initialData, ...transactionData });
+    } else {
+      // Pass data without ID for creation
+      onSubmit(transactionData);
+      // Reset form manually only if adding (edit reset is handled by initialData changing to null)
+      setAmount('');
+      setNote('');
+    }
   };
 
   return (
     <Card>
-      <h3 className="text-lg font-bold text-slate-800 mb-6">Add Transaction</h3>
+      <div className="flex justify-between items-center mb-6">
+        <h3 className="text-lg font-bold text-slate-800">
+          {initialData ? 'Edit Transaction' : 'Add Transaction'}
+        </h3>
+        {initialData && onCancelEdit && (
+          <button 
+            type="button" 
+            onClick={onCancelEdit} 
+            className="text-sm font-medium text-slate-500 hover:text-slate-800 transition-colors"
+          >
+            Cancel
+          </button>
+        )}
+      </div>
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* Type Toggle */}
         <div className="flex gap-4">
@@ -83,7 +123,7 @@ export function TransactionForm({ onSubmit }: TransactionFormProps) {
         </div>
 
         <button type="submit" className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all shadow-md shadow-blue-500/30 hover:shadow-lg hover:shadow-blue-500/40 mt-4 active:scale-[0.98]">
-          Save Transaction
+          {initialData ? 'Update Transaction' : 'Save Transaction'}
         </button>
       </form>
     </Card>

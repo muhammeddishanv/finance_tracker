@@ -6,15 +6,19 @@ import { TransactionForm } from './components/transaction/TransactionForm';
 import { TransactionTable } from './components/transaction/TransactionTable';
 import { CategoryFilter } from './components/transaction/CategoryFilter';
 import { useTransactions } from './hooks/useTransactions';
+import type { Transaction } from './types/transaction';
 
 function App() {
-  const { transactions, addTransaction, deleteTransaction } = useTransactions();
+  const { transactions, addTransaction, updateTransaction, deleteTransaction } = useTransactions();
   
   // Filter state
   const [selectedType, setSelectedType] = useState('all');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+
+  // Edit state
+  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
 
   // Apply filters
   const filteredTransactions = transactions.filter(t => {
@@ -24,6 +28,15 @@ function App() {
     if (endDate && new Date(t.date) > new Date(endDate)) return false;
     return true;
   });
+
+  const handleFormSubmit = (data: any) => {
+    if (editingTransaction) {
+      updateTransaction(data);
+      setEditingTransaction(null);
+    } else {
+      addTransaction(data);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 p-4 md:p-8">
@@ -40,7 +53,11 @@ function App() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left Column: Form & Chart */}
             <div className="lg:col-span-1 space-y-8">
-              <TransactionForm onSubmit={addTransaction} />
+              <TransactionForm 
+                onSubmit={handleFormSubmit} 
+                initialData={editingTransaction} 
+                onCancelEdit={() => setEditingTransaction(null)} 
+              />
               <SpendingChart transactions={transactions} />
             </div>
             
@@ -57,7 +74,11 @@ function App() {
                 onEndDateChange={setEndDate}
               />
               <div className="flex-1">
-                <TransactionTable transactions={filteredTransactions} onDelete={deleteTransaction} />
+                <TransactionTable 
+                  transactions={filteredTransactions} 
+                  onDelete={deleteTransaction} 
+                  onEdit={setEditingTransaction}
+                />
               </div>
             </div>
           </div>
