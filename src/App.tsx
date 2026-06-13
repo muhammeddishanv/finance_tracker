@@ -74,6 +74,23 @@ function App() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Scroll to top when changing tabs in mobile view
+  useEffect(() => {
+    if (isMobile) {
+      window.scrollTo(0, 0);
+    }
+  }, [activeTab, isMobile]);
+
+  // Reset filters when navigating between tabs
+  useEffect(() => {
+    setFilters({
+      type: 'all',
+      category: 'All',
+      startDate: '',
+      endDate: ''
+    });
+  }, [activeTab]);
+
   const handleFormSubmit = (data: TransactionInput | Transaction) => {
     if (editingTransaction) {
       updateTransaction(data as Transaction);
