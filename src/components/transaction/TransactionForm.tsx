@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { INCOME_CATEGORIES, EXPENSE_CATEGORIES } from '../../constants/categories';
 import type { Transaction, TransactionType, TransactionInput } from '../../types/transaction';
 import { Card } from '../ui/Card';
@@ -10,27 +10,11 @@ interface TransactionFormProps {
 }
 
 export function TransactionForm({ onSubmit, initialData, onCancelEdit }: TransactionFormProps) {
-  const [type, setType] = useState<TransactionType>('expense');
-  const [amount, setAmount] = useState('');
-  const [category, setCategory] = useState<string>(EXPENSE_CATEGORIES[0]);
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-  const [note, setNote] = useState('');
-
-  useEffect(() => {
-    if (initialData) {
-      setType(initialData.type);
-      setAmount(initialData.amount.toString());
-      setCategory(initialData.category);
-      setDate(new Date(initialData.date).toISOString().split('T')[0]);
-      setNote(initialData.note || '');
-    } else {
-      setType('expense');
-      setAmount('');
-      setCategory(EXPENSE_CATEGORIES[0]);
-      setDate(new Date().toISOString().split('T')[0]);
-      setNote('');
-    }
-  }, [initialData]);
+  const [type, setType] = useState<TransactionType>(initialData?.type || 'expense');
+  const [amount, setAmount] = useState(initialData?.amount.toString() || '');
+  const [category, setCategory] = useState<string>(initialData?.category || EXPENSE_CATEGORIES[0]);
+  const [date, setDate] = useState(initialData ? new Date(initialData.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]);
+  const [note, setNote] = useState(initialData?.note || '');
 
   const categories = type === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
 

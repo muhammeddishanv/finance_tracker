@@ -14,6 +14,7 @@ export function useTransactions() {
 
   // Initial load
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadTransactions();
   }, [loadTransactions]);
 

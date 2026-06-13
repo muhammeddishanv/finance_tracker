@@ -23,8 +23,6 @@ import {
   ArrowDownRight, 
   Wallet, 
   TrendingUp,
-  ArrowUp,
-  ArrowDown,
   ChevronRight,
   Briefcase,
   DollarSign,
@@ -388,6 +386,7 @@ function App() {
                 </button>
               </div>
               <TransactionForm 
+                key={editingTransaction?.id || 'new_mobile'}
                 onSubmit={(data) => {
                   handleFormSubmit(data);
                   setIsFormOpen(false);
@@ -502,6 +501,7 @@ function App() {
             {/* Left Column: Form (3 cols) */}
             <div className="lg:col-span-3 space-y-6">
               <TransactionForm 
+                key={editingTransaction?.id || 'new_desktop'}
                 onSubmit={handleFormSubmit} 
                 initialData={editingTransaction} 
                 onCancelEdit={() => setEditingTransaction(null)} 
