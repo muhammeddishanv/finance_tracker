@@ -71,33 +71,37 @@ export function CategoryFilter({
         <label className="block text-xs font-bold uppercase mb-1 truncate">
           From Date
         </label>
-        <input
-          type="date"
-          value={startDate}
-          onChange={(e) => {
-            onFilterChange({
-              ...filters,
-              startDate: e.target.value
-            });
-          }}
-          className="w-full max-w-full min-w-0 h-10 border-neo bg-white px-1 sm:px-3 font-bold uppercase text-[10px] sm:text-xs focus:outline-none focus:shadow-neo-sm transition-shadow rounded-none"
-        />
+        <div className="w-full h-10 border-neo bg-white overflow-hidden focus-within:shadow-neo-sm transition-shadow rounded-none">
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => {
+              onFilterChange({
+                ...filters,
+                startDate: e.target.value
+              });
+            }}
+            className="w-full h-full bg-transparent px-1 sm:px-3 font-bold uppercase text-[10px] sm:text-xs focus:outline-none"
+          />
+        </div>
       </div>
       <div className="min-w-0">
         <label className="block text-xs font-bold uppercase mb-1 truncate">
           To Date
         </label>
-        <input
-          type="date"
-          value={endDate}
-          onChange={(e) => {
-            onFilterChange({
-              ...filters,
-              endDate: e.target.value
-            });
-          }}
-          className="w-full max-w-full min-w-0 h-10 border-neo bg-white px-1 sm:px-3 font-bold uppercase text-[10px] sm:text-xs focus:outline-none focus:shadow-neo-sm transition-shadow rounded-none"
-        />
+        <div className="w-full h-10 border-neo bg-white overflow-hidden focus-within:shadow-neo-sm transition-shadow rounded-none">
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => {
+              onFilterChange({
+                ...filters,
+                endDate: e.target.value
+              });
+            }}
+            className="w-full h-full bg-transparent px-1 sm:px-3 font-bold uppercase text-[10px] sm:text-xs focus:outline-none"
+          />
+        </div>
       </div>
     </div>
   );
