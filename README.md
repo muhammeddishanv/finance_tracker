@@ -43,6 +43,7 @@ The project is structured like a production-ready front-end: presentation compon
   - Type: All / Income / Expense
   - Category
   - Date range (From / To)
+- **Reset Filters** button to instantly clear all active filters and return to the full transaction list.
 - Filter panel is always visible on desktop; on mobile it’s presented in a focused screen.
 
 ### 4. Analytics & Visualization

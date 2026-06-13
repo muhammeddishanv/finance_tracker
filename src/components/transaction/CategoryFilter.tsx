@@ -19,7 +19,8 @@ export function CategoryFilter({
     [...INCOME_CATEGORIES, ...EXPENSE_CATEGORIES];
 
   return (
-    <div className="bg-[var(--color-neo-warning)] p-3 md:p-4 border-neo shadow-neo grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+    <div className="bg-[var(--color-neo-warning)] p-3 md:p-4 border-neo shadow-neo flex flex-col gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
       {/* Type Filter */}
       <div className="min-w-0">
         <label className="block text-xs font-bold uppercase mb-1 truncate">
@@ -102,6 +103,16 @@ export function CategoryFilter({
             className="w-full h-full bg-transparent px-1 sm:px-3 font-bold uppercase text-[10px] sm:text-xs focus:outline-none"
           />
         </div>
+      </div>
+      </div>
+
+      <div className="flex justify-end pt-1">
+        <button
+          onClick={() => onFilterChange({ type: 'all', category: 'All', startDate: '', endDate: '' })}
+          className="px-4 h-8 bg-white border-neo shadow-neo hover-neo hover:bg-[var(--color-neo-expense)] active:bg-[var(--color-neo-expense)] transition-colors font-extrabold uppercase text-[10px] tracking-wide"
+        >
+          Reset Filters
+        </button>
       </div>
     </div>
   );
