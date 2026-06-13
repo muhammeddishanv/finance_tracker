@@ -19,7 +19,7 @@ export function CategoryFilter({
     [...INCOME_CATEGORIES, ...EXPENSE_CATEGORIES];
 
   return (
-    <div className="bg-[var(--color-neo-warning)] p-4 border-neo shadow-neo mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="bg-[var(--color-neo-warning)] p-3 md:p-4 border-neo shadow-neo grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
       {/* Type Filter */}
       <div>
         <label className="block text-xs font-bold uppercase mb-1">
