@@ -80,7 +80,7 @@ export function CategoryFilter({
               startDate: e.target.value
             });
           }}
-          className="w-full min-w-0 h-10 border-neo bg-white px-1 sm:px-3 font-bold uppercase text-[10px] sm:text-xs focus:outline-none focus:shadow-neo-sm transition-shadow rounded-none"
+          className="w-full max-w-full min-w-0 h-10 border-neo bg-white px-1 sm:px-3 font-bold uppercase text-[10px] sm:text-xs focus:outline-none focus:shadow-neo-sm transition-shadow rounded-none"
         />
       </div>
       <div className="min-w-0">
@@ -96,7 +96,7 @@ export function CategoryFilter({
               endDate: e.target.value
             });
           }}
-          className="w-full min-w-0 h-10 border-neo bg-white px-1 sm:px-3 font-bold uppercase text-[10px] sm:text-xs focus:outline-none focus:shadow-neo-sm transition-shadow rounded-none"
+          className="w-full max-w-full min-w-0 h-10 border-neo bg-white px-1 sm:px-3 font-bold uppercase text-[10px] sm:text-xs focus:outline-none focus:shadow-neo-sm transition-shadow rounded-none"
         />
       </div>
     </div>
