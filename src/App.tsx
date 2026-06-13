@@ -12,6 +12,7 @@ import { useTransactionFilters } from './hooks/useTransactionFilters';
 import { useToast } from './hooks/useToast';
 import type { Transaction, TransactionFilters, TransactionInput } from './types/transaction';
 import { calculateSummary } from './utils/calculateSummary';
+import { generateInsight } from './utils/generateInsight';
 import { formatCurrency } from './utils/formatCurrency';
 import { 
   LayoutDashboard, 
@@ -160,7 +161,7 @@ function App() {
                       <ArrowUpRight className="w-3.5 h-3.5 text-[#111111]" strokeWidth={3} />
                     </span>
                     <span className="text-[10px] font-bold text-slate-900 uppercase leading-[1.2] max-w-[170px]">
-                      You are saving money this month. Great job!
+                      {generateInsight(transactions)}
                     </span>
                   </div>
                 </div>
