@@ -15,6 +15,21 @@ const CATEGORY_COLORS: Record<string, string> = {
   'Other Expense': '#CBD5E1'
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const CustomTooltip = ({ active, payload }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white border-neo shadow-neo p-3">
+        <p className="font-bold uppercase text-xs mb-1">{payload[0].name}</p>
+        <p className="font-bold text-sm text-rose-600">
+          {formatCurrency(payload[0].value)}
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
+
 export function SpendingChart({ transactions, onViewAll }: { transactions: Transaction[]; onViewAll?: () => void }) {
   const chartData = useMemo(() => {
     const expenses = transactions.filter(t => t.type === 'expense');
@@ -55,19 +70,7 @@ export function SpendingChart({ transactions, onViewAll }: { transactions: Trans
     );
   }
 
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-white border-neo shadow-neo p-3">
-          <p className="font-bold uppercase text-xs mb-1">{payload[0].name}</p>
-          <p className="font-bold text-sm text-rose-600">
-            {formatCurrency(payload[0].value)}
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
+
 
   return (
     <>
