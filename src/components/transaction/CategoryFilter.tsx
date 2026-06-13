@@ -21,8 +21,8 @@ export function CategoryFilter({
   return (
     <div className="bg-[var(--color-neo-warning)] p-3 md:p-4 border-neo shadow-neo grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
       {/* Type Filter */}
-      <div>
-        <label className="block text-xs font-bold uppercase mb-1">
+      <div className="min-w-0">
+        <label className="block text-xs font-bold uppercase mb-1 truncate">
           Transaction Type
         </label>
         <select
@@ -34,7 +34,7 @@ export function CategoryFilter({
               category: 'All' // Reset category when type changes
             });
           }}
-          className="w-full h-10 border-neo bg-white px-3 font-bold uppercase text-xs focus:outline-none focus:shadow-neo-sm transition-shadow cursor-pointer rounded-none"
+          className="w-full min-w-0 h-10 border-neo bg-white px-2 sm:px-3 font-bold uppercase text-[10px] sm:text-xs focus:outline-none focus:shadow-neo-sm transition-shadow cursor-pointer rounded-none"
         >
           <option value="all">All Types</option>
           <option value="income">Income</option>
@@ -43,8 +43,8 @@ export function CategoryFilter({
       </div>
       
       {/* Category Filter */}
-      <div>
-        <label className="block text-xs font-bold uppercase mb-1">
+      <div className="min-w-0">
+        <label className="block text-xs font-bold uppercase mb-1 truncate">
           Category
         </label>
         <select
@@ -55,7 +55,7 @@ export function CategoryFilter({
               category: e.target.value
             });
           }}
-          className="w-full h-10 border-neo bg-white px-3 font-bold uppercase text-xs focus:outline-none focus:shadow-neo-sm transition-shadow cursor-pointer rounded-none"
+          className="w-full min-w-0 h-10 border-neo bg-white px-2 sm:px-3 font-bold uppercase text-[10px] sm:text-xs focus:outline-none focus:shadow-neo-sm transition-shadow cursor-pointer rounded-none"
         >
           <option value="All">All Categories</option>
           {categories.map((category) => (
@@ -67,8 +67,8 @@ export function CategoryFilter({
       </div>
 
       {/* Date Range Filters */}
-      <div>
-        <label className="block text-xs font-bold uppercase mb-1">
+      <div className="min-w-0">
+        <label className="block text-xs font-bold uppercase mb-1 truncate">
           From Date
         </label>
         <input
@@ -80,11 +80,11 @@ export function CategoryFilter({
               startDate: e.target.value
             });
           }}
-          className="w-full h-10 border-neo bg-white px-3 font-bold uppercase text-xs focus:outline-none focus:shadow-neo-sm transition-shadow rounded-none"
+          className="w-full min-w-0 h-10 border-neo bg-white px-1 sm:px-3 font-bold uppercase text-[10px] sm:text-xs focus:outline-none focus:shadow-neo-sm transition-shadow rounded-none"
         />
       </div>
-      <div>
-        <label className="block text-xs font-bold uppercase mb-1">
+      <div className="min-w-0">
+        <label className="block text-xs font-bold uppercase mb-1 truncate">
           To Date
         </label>
         <input
@@ -96,7 +96,7 @@ export function CategoryFilter({
               endDate: e.target.value
             });
           }}
-          className="w-full h-10 border-neo bg-white px-3 font-bold uppercase text-xs focus:outline-none focus:shadow-neo-sm transition-shadow rounded-none"
+          className="w-full min-w-0 h-10 border-neo bg-white px-1 sm:px-3 font-bold uppercase text-[10px] sm:text-xs focus:outline-none focus:shadow-neo-sm transition-shadow rounded-none"
         />
       </div>
     </div>
